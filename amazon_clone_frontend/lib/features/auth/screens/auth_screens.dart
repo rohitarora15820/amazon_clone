@@ -1,6 +1,7 @@
 import 'package:amazon_clone_frontend/common/widgets/custom_button.dart';
 import 'package:amazon_clone_frontend/common/widgets/custom_textfield.dart';
-import 'package:amazon_clone_frontend/contants/global_variables.dart';
+import 'package:amazon_clone_frontend/constants/global_variables.dart';
+import 'package:amazon_clone_frontend/features/auth/services/auth_services.dart';
 import 'package:flutter/material.dart';
 
 enum Auth { signIn, signUp }
@@ -17,17 +18,30 @@ class _AuthScreenState extends State<AuthScreen> {
   Auth _auth = Auth.signUp;
   final _signUpFormKey = GlobalKey<FormState>();
   final _signInFormKey = GlobalKey<FormState>();
+  final AuthServices authService = AuthServices();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
+  }
+
+  void signUpUser() {
+    authService.signUpUser(
+        context: context,
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text);
+  }
+
+  void signInUser() {
+    authService.signInUser(
+        context: context,
+        email: _emailController.text,
+        password: _passwordController.text);
   }
 
   @override
@@ -64,42 +78,46 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               if (_auth == Auth.signUp)
-
-              Container(
-                padding: EdgeInsets.all(8),
-                color: GlobalVariables.backgroundColor,child:  Form(
-                  key: _signUpFormKey,
-                  child: Column(
-                    children: [
-                      CustomTextField(
-                        controller: _nameController,
-                        hintText: "Name",
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CustomTextField(
-                        controller: _emailController,
-                        hintText: "Email",
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CustomTextField(
-                        controller: _passwordController,
-                        hintText: "Password",
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CustomButton(
-                        title: "Sign Up",
-                        onPressed: () {},
-                      )
-                    ],
+                Container(
+                  padding: EdgeInsets.all(8),
+                  color: GlobalVariables.backgroundColor,
+                  child: Form(
+                    key: _signUpFormKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          controller: _nameController,
+                          hintText: "Name",
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                          controller: _emailController,
+                          hintText: "Email",
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                          controller: _passwordController,
+                          hintText: "Password",
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomButton(
+                          title: "Sign Up",
+                          onPressed: () {
+                            if(_signUpFormKey.currentState!.validate()){
+                              signUpUser();
+                            }
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
               ListTile(
                 tileColor: _auth == Auth.signIn
                     ? GlobalVariables.backgroundColor
@@ -120,35 +138,38 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               if (_auth == Auth.signIn)
-
                 Container(
                   padding: EdgeInsets.all(8),
-                  color: GlobalVariables.backgroundColor,child:  Form(
-                  key: _signInFormKey,
-                  child: Column(
-                    children: [
-
-                      CustomTextField(
-                        controller: _emailController,
-                        hintText: "Email",
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CustomTextField(
-                        controller: _passwordController,
-                        hintText: "Password",
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      CustomButton(
-                        title: "Sign In",
-                        onPressed: () {},
-                      )
-                    ],
+                  color: GlobalVariables.backgroundColor,
+                  child: Form(
+                    key: _signInFormKey,
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          controller: _emailController,
+                          hintText: "Email",
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                          controller: _passwordController,
+                          hintText: "Password",
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomButton(
+                          title: "Sign In",
+                          onPressed: () {
+                            if(_signInFormKey.currentState!.validate()){
+                              signInUser();
+                            }
+                          },
+                        )
+                      ],
+                    ),
                   ),
-                ),
                 ),
             ],
           ),

@@ -12,10 +12,15 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
           border:
-              OutlineInputBorder(borderSide: BorderSide(color: Colors.black38)),
-          enabledBorder: OutlineInputBorder(
+              const OutlineInputBorder(borderSide: BorderSide(color: Colors.black38)),
+          enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black38))),
-      validator: (value) {},
+      validator: (value) {
+        if(value == null || value.isEmpty){
+          return "Enter your $hintText";
+        }
+        return null;
+      },
     );
   }
 }
