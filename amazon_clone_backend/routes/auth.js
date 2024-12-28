@@ -2,6 +2,7 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user_model");
+const auth = require("../middleware/auth");
 
 const authRouter = express.Router();
 
@@ -41,7 +42,7 @@ authRouter.post("/api/signIn", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user =await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email });
 
     if (!user) {
       return res
@@ -63,4 +64,34 @@ authRouter.post("/api/signIn", async (req, res) => {
   }
 });
 
+// isValidToken Api
+authRouter.post("/isValidToken", async (req, res) => {
+  try {
+    const token = req.header("x-auth-token");
+
+    if (!token)  return res.json(false);
+  
+
+    const verified = jwt.verify(token, "passwordKey");
+
+    if (!verified) return res.json(false);
+
+    const user = await UserModel.findById(verified.id);
+
+    if (!user) return res.json(false);
+
+    res.json(true);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// get USer Data if We Are Authenticated
+authRouter.get('/',auth, async (req, res) => {
+
+    const user = await UserModel.findById(req.user);
+    res.json({...user._doc,token:req.token});
+  
+})
+ 
 module.exports = authRouter;
