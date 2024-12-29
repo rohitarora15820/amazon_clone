@@ -1,4 +1,5 @@
 import 'package:amazon_clone_frontend/constants/global_variables.dart';
+import 'package:amazon_clone_frontend/features/account/screens/account_screen.dart';
 import 'package:amazon_clone_frontend/features/home_screen/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
@@ -18,7 +19,7 @@ class _BottomBarState extends State<BottomBar> {
 
   List<Widget> pages=[
     HomeScreen(),
-    Center(child: Text("Account Page"),),
+    AccountScreen(),
     Center(child: Text("Cart Page"),),
   ];
 
