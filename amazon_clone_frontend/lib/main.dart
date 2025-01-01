@@ -1,5 +1,6 @@
 import 'package:amazon_clone_frontend/common/widgets/bottom_bar.dart';
 import 'package:amazon_clone_frontend/constants/global_variables.dart';
+import 'package:amazon_clone_frontend/features/admin/screens/admin_screen.dart';
 import 'package:amazon_clone_frontend/features/auth/screens/auth_screens.dart';
 import 'package:amazon_clone_frontend/features/auth/services/auth_services.dart';
 import 'package:amazon_clone_frontend/features/home_screen/screens/home_screen.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-final AuthServices authServices=AuthServices();
+  final AuthServices authServices = AuthServices();
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ final AuthServices authServices=AuthServices();
     super.initState();
     authServices.getUserData(context: context);
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -46,8 +48,10 @@ final AuthServices authServices=AuthServices();
           colorScheme:
               const ColorScheme.light(primary: GlobalVariables.secondaryColor),
         ),
-        home: Provider.of<UserProvider>(context).user.token.isNotEmpty?
-        const BottomBar():
-        const AuthScreen());
+        home: Provider.of<UserProvider>(context).user.token.isNotEmpty
+            ? Provider.of<UserProvider>(context).user.type == "user"
+                ? const BottomBar()
+                : const AdminScreen()
+            : const AuthScreen());
   }
 }
