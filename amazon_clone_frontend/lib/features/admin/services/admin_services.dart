@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:amazon_clone_frontend/constants/error_handling.dart';
 import 'package:amazon_clone_frontend/constants/global_variables.dart';
@@ -18,8 +19,10 @@ class AdminServices {
       required String category,
       required double price,
       required double quantity,
-      required List<File> images}) async {
-    final userProvider=Provider.of<UserProvider>(context,listen: false).user;
+      required List<File> images,
+        required VoidCallback onSuccess
+      }) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false).user;
     try {
       final cloudinary = CloudinaryPublic("dv37h8ukm", "amkxlyw1");
       List<String> imageUrls = [];
@@ -37,23 +40,79 @@ class AdminServices {
           quantity: quantity,
           price: price,
           images: imageUrls);
-      
-      http.Response res= await http.post(Uri.parse('$apiPath/admin/add-products'),
-      headers: {
+
+      http.Response res =
+          await http.post(Uri.parse('$apiPath/admin/add-products'),
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                "x-auth-token": userProvider.token
+              },
+              body: productData.toJson());
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            showSnackBar(context, "Product Added Successfully!");
+            Navigator.of(context).pop();
+            onSuccess();
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+  }
+
+  Future<List<ProductModel>> fetchAllProducts(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false).user;
+    List<ProductModel> productList = [];
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$apiPath/admin/get-products'), headers: {
         'Content-Type': 'application/json; charset=utf-8',
         "x-auth-token": userProvider.token
-      },
-        body: productData.toJson()
+      });
 
+      log("response" + res.toString());
+
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            for (int i = 0; i < jsonDecode(res.body).length; i++) {
+              productList.add(
+                  ProductModel.fromJson(jsonEncode(jsonDecode(res.body)[i])));
+            }
+          });
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+    return productList;
+  }
+
+  void deleteProduct(
+      {required BuildContext context,
+      required ProductModel productModel,
+      required VoidCallback onSuccess}) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false).user;
+    try {
+
+      http.Response res =
+      await http.post(Uri.parse('$apiPath/admin/delete-products'),
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            "x-auth-token": userProvider.token
+          },
+          body: jsonEncode({
+            "id":productModel.id
+          })
       );
 
-      httpErrorHandle(response: res, context: context, onSuccess: (){
-        showSnackBar(context, "Product Added Successfully!");
-        Navigator.of(context).pop();
-      });
-      
-
-
+      httpErrorHandle(
+          response: res,
+          context: context,
+          onSuccess: () {
+            onSuccess();
+          });
     } catch (e) {
       showSnackBar(context, e.toString());
     }

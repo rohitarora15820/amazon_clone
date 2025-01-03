@@ -8,7 +8,7 @@ const admin = async (req, res, next) => {
     if (!token) {
       return res
         .status(401)
-        .json({ message: "Invalid token provided in request body" });
+        .json({ message: "Please Provide Token!" });
     }
 
     const verified = jwt.verify(token, "passwordKey");

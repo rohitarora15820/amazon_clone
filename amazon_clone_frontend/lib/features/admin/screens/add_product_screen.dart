@@ -62,7 +62,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
           category: categoryName,
           price: double.parse(priceController.text),
           quantity: double.parse(quantityController.text),
-          images: images);
+          images: images,
+      onSuccess: () {
+           
+        setState(() {
+
+        });
+      },
+      );
     }
   }
 
