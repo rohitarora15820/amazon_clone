@@ -44,7 +44,7 @@ adminRouter.post('/admin/delete-products',admin, async(req,res)=>{
         const product = await productModel.findByIdAndDelete(id);
         if(!product){
             return res.status(404).json({message: 'Product not found'});
-        }
+        } 
         res.status(200).json({message: 'Product deleted successfully', data: product});
     }catch(e){
         res.status(500).json({error: e.message});

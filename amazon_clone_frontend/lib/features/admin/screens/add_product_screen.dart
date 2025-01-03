@@ -64,7 +64,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           quantity: double.parse(quantityController.text),
           images: images,
       onSuccess: () {
-           
+
         setState(() {
 
         });

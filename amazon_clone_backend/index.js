@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./routes/auth");
 const adminRouter = require("./routes/admin");
+const productRouter = require("./routes/product");
 const app = express();
 const PORT = 3000;
 const DB="mongodb+srv://rohitarora15820:bW2qlhrYtFkBnny4@cluster0.xuh66.mongodb.net/amazon_clone";
@@ -10,6 +11,7 @@ const DB="mongodb+srv://rohitarora15820:bW2qlhrYtFkBnny4@cluster0.xuh66.mongodb.
 app.use(express.json());
 app.use(authRouter);
 app.use(adminRouter);
+app.use(productRouter);
 
 
 mongoose
